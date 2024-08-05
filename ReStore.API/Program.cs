@@ -11,6 +11,8 @@ internal class Program
 
         // Add services to the container.
 
+        builder.Services.AddCors();
+
         builder.Services.AddInfraestructure(builder.Configuration);
 
         builder.Services.AddControllers();
@@ -26,6 +28,11 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.UseCors(opt =>
+        {
+            opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+        });
 
         app.UseHttpsRedirection();
 
