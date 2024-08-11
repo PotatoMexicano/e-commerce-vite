@@ -1,12 +1,18 @@
 import { CssBaseline } from "@mui/material";
 import { Product } from "../../app/modules/products"
 import ProductList from "./ProductList";
+import { useEffect, useState } from "react";
 
-interface Props {
-    products: Product[];
-}
+export default function Catalog() {
 
-export default function Catalog({products}: Props) {
+    const [products, setProducts] = useState<Product[]>([]);
+
+    useEffect(() => {
+        fetch('http://localhost:5035/api/products')
+            .then(response => response.json())
+            .then(data => setProducts(data))
+    }, []);
+
     return (
         <>
             <CssBaseline />
