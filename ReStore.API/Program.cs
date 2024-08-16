@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ReStore.API.Middleware;
 using ReStore.Infra.Data.Context;
 using ReStore.Infra.IoC;
 using ReStore.Infra.IoC.Initializers;
@@ -21,6 +22,9 @@ internal class Program
         builder.Services.AddSwaggerGen();
 
         WebApplication app = builder.Build();
+
+        //app.UseDeveloperExceptionPage();
+        app.UseMiddleware<ExceptionMiddleware>();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
