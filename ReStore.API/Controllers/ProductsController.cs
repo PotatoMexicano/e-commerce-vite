@@ -25,6 +25,8 @@ public class ProductsController : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<Product?>> GetProduct(Int32 id, CancellationToken cancellation = default)
     {
-        return await _productService.GetProduct(id, cancellation);
+        Product? product = await _productService.GetProduct(id, cancellation);
+
+        return product is null ? (ActionResult<Product?>)NotFound() : (ActionResult<Product?>)product;
     }
 }

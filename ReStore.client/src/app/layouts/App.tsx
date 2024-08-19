@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
-import Catalog from "../../features/catalog/Catalog";
+import { useState } from "react"
 import Header from "./Headers";
 import { Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/ReactToastify.css';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       <CssBaseline />
       <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
       <Container>

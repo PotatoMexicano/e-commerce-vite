@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ReStore.API.Controllers;
 
@@ -14,7 +13,7 @@ public class BuggyController : BaseApiController
     [HttpGet("bad-request")]
     public IActionResult GetBadRequest()
     {
-        return BadRequest(new ProblemDetails { Title = "This is a bad request"});
+        return BadRequest(new ProblemDetails { Title = "This is a bad request" });
     }
 
     [HttpGet("unauthorized")]
