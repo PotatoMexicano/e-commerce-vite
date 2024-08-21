@@ -33,6 +33,9 @@ public static class DependencyInjection
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductService, ProductService>();
 
+        services.AddScoped<IBasketRepository, BasketRepository>();
+        services.AddScoped<IBasketService, BasketService>();
+
         return services;
 
     }
