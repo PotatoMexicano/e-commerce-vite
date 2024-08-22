@@ -1,4 +1,6 @@
-﻿namespace ReStore.Domain.Entities;
+﻿using ReStore.Domain.DTOs;
+
+namespace ReStore.Domain.Entities;
 public class Basket
 {
     public Int32 Id { get; set; }
@@ -38,5 +40,24 @@ public class Basket
         }
 
         if (item.Quantity <= 0) Items.Remove(item);
+    }
+
+    public BasketDTO MapBasketToDTO()
+    {
+        return new BasketDTO
+        {
+            Id = Id,
+            BuyerId = BuyerId,
+            Items = Items.Select(item => new BasketItemDTO
+            {
+                ProductId = item.ProductId,
+                Name = item.Product.Name,
+                Price = item.Product.Price,
+                PictureUrl = item.Product.PictureUrl,
+                Type = item.Product.Type,
+                Brand = item.Product.Brand,
+                Quantity = item.Quantity
+            }).ToList()
+        };
     }
 }

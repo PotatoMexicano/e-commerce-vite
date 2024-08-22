@@ -18,7 +18,7 @@ public class BasketController : BaseApiController
         _productService = productService;
     }
 
-    [HttpGet]
+    [HttpGet(Name = "GetBasket")]
     public async Task<ActionResult<BasketDTO>> GetBasket(CancellationToken cancellation = default)
     {
         String? buyerId = Request.Cookies["buyerId"];
@@ -29,25 +29,11 @@ public class BasketController : BaseApiController
 
         if (basket == null) return NotFound();
 
-        return new BasketDTO
-        {
-            Id = basket.Id,
-            BuyerId = basket.BuyerId,
-            Items = basket.Items.Select(item => new BasketItemDTO
-            {
-                ProductId = item.ProductId,
-                Name = item.Product.Name,
-                Price = item.Product.Price,
-                PictureUrl = item.Product.PictureUrl,
-                Type = item.Product.Type,
-                Brand = item.Product.Brand,
-                Quantity = item.Quantity
-            }).ToList()
-        };
+        return basket.MapBasketToDTO();
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddItemToBasket(Int32 productId, Int32 quantity, CancellationToken cancellation = default)
+    public async Task<ActionResult<BasketDTO>> AddItemToBasket(Int32 productId, Int32 quantity, CancellationToken cancellation = default)
     {
         String? buyerId = Request.Cookies["buyerId"];
 
@@ -70,7 +56,9 @@ public class BasketController : BaseApiController
 
         Basket? result = await _basketService.UpdateBasket(basket, cancellation);
 
-        return result != null ? StatusCode(201) : BadRequest(new ProblemDetails { Title = "Problem saving item to basket" });
+        if (result != null) return CreatedAtRoute("GetBasket", basket.MapBasketToDTO());
+
+        return BadRequest(new ProblemDetails { Title = "Problem saving item to basket" });
     }
 
     [HttpDelete]
