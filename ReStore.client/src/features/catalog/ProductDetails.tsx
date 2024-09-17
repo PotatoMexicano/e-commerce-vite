@@ -1,16 +1,18 @@
-import { Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, useStepContext } from "@mui/material";
+import { Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../app/modules/products";
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layouts/LoadingComponent";
-import { useStoreContext } from "../../app/context/StoreContext";
 import { LoadingButton } from "@mui/lab";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { removeItem, setBasket } from "../basket/basketSlice";
 
 export default function ProductDetails() {
     const { id } = useParams<{ id: string }>();
-    const {basket, setBasket,removeItem} = useStoreContext();
+    const {basket} = useAppSelector(state => state.basket);
+    const dispatch = useAppDispatch();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(0);
@@ -38,13 +40,13 @@ export default function ProductDetails() {
         if (!item || quantity > item.quantity) {
             const updatedQuantity = item ? quantity - item.quantity : quantity;
             agent.Basket.addItem(product.id, updatedQuantity)
-            .then(basket => setBasket(basket))
+            .then(basket => dispatch(setBasket(basket)))
             .catch(error => console.error(error))
             .finally(() => setSubmitting(false));
         } else {
             const updatedQuantity = item.quantity - quantity;
             agent.Basket.removeItem(product.id, updatedQuantity)
-            .then(() => removeItem(product.id, updatedQuantity))
+            .then(() => dispatch(removeItem({productId: product?.id!, quantity: updatedQuantity})))
             .catch(error => console.error(error))
             .finally(() => setSubmitting(false));
         }
