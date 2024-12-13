@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReStore.Domain.Entities;
+using ReStore.Domain.Extensions;
 using ReStore.Domain.InterfacesRepository;
 using ReStore.Infra.Data.Context;
 
@@ -19,8 +20,14 @@ public class ProductRepository : IProductRepository
         return await _storeContext.Products.FindAsync(id, cancellation);
     }
 
-    public async Task<List<Product>> GetProductsAsync(CancellationToken cancellation = default)
+    public async Task<List<Product>> GetProductsAsync(String orderBy, String searchTerm, CancellationToken cancellation = default)
     {
-        return await _storeContext.Products.ToListAsync(cancellation);
+        IQueryable<Product> query = _storeContext.Products
+            .Sort(orderBy)
+            .Search(searchTerm)
+            .AsQueryable();
+
+        return await query.ToListAsync(cancellation);
+
     }
 }
